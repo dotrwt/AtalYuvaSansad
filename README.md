@@ -22,7 +22,7 @@ The event takes place over three days at **Kiddy's Corner Hr. Secondary School, 
 
 Website is live on : <a href=''>Live</a>
 
-<img src='https://github.com/dotrwt/AtalYuvaSansad/AYS_UI.png' alt='AYS_UI'>
+<img src='https://github.com/dotrwt/AtalYuvaSansad/blob/main/AYS_UI.png' alt='AYS_UI'>
 
 ---
 
