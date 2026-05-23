@@ -1,213 +1,97 @@
-// Smooth scroll animation observer
-const observerOptions = {
-    threshold: 0.1,
-    rootMargin: '0px 0px -100px 0px'
-};
-
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.style.opacity = '1';
-            entry.target.style.transform = 'translateY(0)';
+document.addEventListener('DOMContentLoaded', () => {
+    
+    // --- Navigation Sticky & Glassmorphism ---
+    const navbar = document.getElementById('navbar');
+    
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 50) {
+            navbar.classList.add('scrolled');
+        } else {
+            navbar.classList.remove('scrolled');
         }
     });
-}, observerOptions);
 
-// Observe all sections
-document.addEventListener('DOMContentLoaded', () => {
-    // Animate sections on scroll
-    const sections = document.querySelectorAll('section');
-    sections.forEach(section => {
-        section.style.opacity = '0';
-        section.style.transform = 'translateY(30px)';
-        section.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
-        observer.observe(section);
+    // --- Hamburger Menu Mobile ---
+    const hamburger = document.getElementById('hamburger');
+    const navLinks = document.getElementById('nav-links');
+
+    hamburger.addEventListener('click', () => {
+        navLinks.classList.toggle('active');
+        hamburger.innerHTML = navLinks.classList.contains('active') ? '✕' : '☰';
     });
     
-    // Animate timeline items
+    // Close mobile menu on link click
+    document.querySelectorAll('.nav-links a').forEach(link => {
+        link.addEventListener('click', () => {
+            navLinks.classList.remove('active');
+            hamburger.innerHTML = '☰';
+        });
+    });
+
+    // --- Scroll Reveals with Intersection Observer ---
+    const revealElements = document.querySelectorAll('.reveal');
+    
+    const revealOptions = {
+        threshold: 0.15,
+        rootMargin: "0px 0px -50px 0px"
+    };
+    
+    const revealOnScroll = new IntersectionObserver(function(entries, observer) {
+        entries.forEach(entry => {
+            if (!entry.isIntersecting) {
+                return;
+            } else {
+                entry.target.classList.add('active');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, revealOptions);
+    
+    revealElements.forEach(el => {
+        revealOnScroll.observe(el);
+    });
+
+    // --- Staggered Timeline Animation ---
     const timelineItems = document.querySelectorAll('.timeline-item');
     timelineItems.forEach((item, index) => {
-        item.style.opacity = '0';
-        item.style.transform = 'translateX(-30px)';
-        item.style.transition = `opacity 0.5s ease ${index * 0.1}s, transform 0.5s ease ${index * 0.1}s`;
-        observer.observe(item);
+        // Add a slight delay based on index
+        item.style.transitionDelay = `${index * 0.1}s`;
     });
     
-    // Animate committee badges
-    const badges = document.querySelectorAll('.committee-badge');
-    badges.forEach((badge, index) => {
-        badge.style.opacity = '0';
-        badge.style.transform = 'scale(0.8)';
-        badge.style.transition = `opacity 0.5s ease ${index * 0.15}s, transform 0.5s ease ${index * 0.15}s`;
-        observer.observe(badge);
+    // --- Staggered Committee Cards Animation ---
+    const committeeCards = document.querySelectorAll('.committee-card');
+    committeeCards.forEach((card, index) => {
+        card.style.transitionDelay = `${index * 0.1}s`;
     });
+
+    // --- Parallax Effect for Pop-Art Graphics ---
+    const popArtContainers = document.querySelectorAll('.pop-art-container');
     
-    // Subtle parallax for hero (premium, not overwhelming)
-    window.addEventListener('scroll', () => {
-        const scrolled = window.pageYOffset;
-        const hero = document.querySelector('.hero');
-        if (hero) {
-            hero.style.transform = `translateY(${scrolled * 0.15}px)`;
-        }
-    });
-    
-    // Add hover effect to timeline items
-    timelineItems.forEach(item => {
-        item.addEventListener('mouseenter', () => {
-            item.style.boxShadow = '0 4px 20px rgba(212, 175, 55, 0.3)';
-        });
+    let isTicking = false;
+    let mouseX = 0;
+    let mouseY = 0;
+
+    window.addEventListener('mousemove', (e) => {
+        mouseX = e.clientX / window.innerWidth - 0.5;
+        mouseY = e.clientY / window.innerHeight - 0.5;
         
-        item.addEventListener('mouseleave', () => {
-            item.style.boxShadow = 'none';
-        });
-    });
-    
-    // Add interactive glow to committee badges
-    badges.forEach(badge => {
-        badge.addEventListener('mouseenter', (e) => {
-            const rect = badge.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            
-            badge.style.background = `radial-gradient(circle at ${x}px ${y}px, rgba(212, 175, 55, 0.3) 0%, transparent 70%)`;
-        });
-        
-        badge.addEventListener('mousemove', (e) => {
-            const rect = badge.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            
-            badge.style.background = `radial-gradient(circle at ${x}px ${y}px, rgba(212, 175, 55, 0.3) 0%, transparent 70%)`;
-        });
-        
-        badge.addEventListener('mouseleave', () => {
-            badge.style.background = 'radial-gradient(circle, rgba(212, 175, 55, 0.1) 0%, transparent 70%)';
-        });
-    });
-    
-    // Add typing effect to hero title
-    const heroTitle = document.querySelector('.hero-title');
-    if (heroTitle) {
-        const spans = heroTitle.querySelectorAll('span');
-        spans.forEach((span, index) => {
-            span.style.animation = `fadeInUp 1s ease-out ${index * 0.2}s both`;
-        });
-    }
-    
-    // Add stagger animation to awards columns
-    const awardColumns = document.querySelectorAll('.awards-column');
-    awardColumns.forEach((column, index) => {
-        column.style.opacity = '0';
-        column.style.transform = 'translateY(20px)';
-        column.style.transition = `opacity 0.5s ease ${index * 0.1}s, transform 0.5s ease ${index * 0.1}s`;
-        observer.observe(column);
-    });
-    
-    // QR code hover handled by CSS; optional gentle entrance
-    const qrCode = document.querySelector('.qr-code');
-    if (qrCode) {
-        qrCode.style.transition = 'transform 0.3s ease, box-shadow 0.3s ease';
-    }
-    
-    // Add counter animation for dates
-    const dates = document.querySelectorAll('.date');
-    dates.forEach((date, index) => {
-        date.style.animation = `fadeInUp 0.8s ease-out ${0.5 + index * 0.2}s both`;
-    });
-    
-    // Smooth scroll for anchor links (if any are added)
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-            e.preventDefault();
-            const target = document.querySelector(this.getAttribute('href'));
-            if (target) {
-                target.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
+        if (!isTicking) {
+            requestAnimationFrame(() => {
+                popArtContainers.forEach(container => {
+                    const graphic = container.querySelector('.pop-art-graphic');
+                    const shadow = container.querySelector('.pop-art-shadow');
+                    
+                    if (graphic && shadow && container.getBoundingClientRect().top < window.innerHeight && container.getBoundingClientRect().bottom > 0) {
+                        // Subtle parallax on the graphic
+                        graphic.style.transform = `translate(${mouseX * -10}px, ${mouseY * -10}px)`;
+                        // Opposite subtle parallax on the shadow
+                        shadow.style.transform = `translate(${mouseX * 20}px, ${mouseY * 20}px)`;
+                    }
                 });
-            }
-        });
-    });
-    
-    // Add shimmer effect to gold elements
-    const goldElements = document.querySelectorAll('.timeline-name h3, .badge-icon');
-    goldElements.forEach(element => {
-        element.style.position = 'relative';
-        element.style.overflow = 'hidden';
-        
-        const shimmer = document.createElement('div');
-        shimmer.style.position = 'absolute';
-        shimmer.style.top = '0';
-        shimmer.style.left = '-100%';
-        shimmer.style.width = '100%';
-        shimmer.style.height = '100%';
-        shimmer.style.background = 'linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent)';
-        shimmer.style.animation = 'shimmer 3s infinite';
-        
-        element.appendChild(shimmer);
-    });
-    
-    // Add CSS for shimmer animation
-    const style = document.createElement('style');
-    style.textContent = `
-        @keyframes shimmer {
-            0% {
-                left: -100%;
-            }
-            100% {
-                left: 100%;
-            }
+                isTicking = false;
+            });
+            isTicking = true;
         }
-    `;
-    document.head.appendChild(style);
-    
-    // Scroll progress indicator (use existing #scroll-progress element)
-    const progressBar = document.getElementById('scroll-progress');
-    if (progressBar) {
-        window.addEventListener('scroll', () => {
-            const windowHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-            const scrolled = windowHeight > 0 ? (window.pageYOffset / windowHeight) * 100 : 0;
-            progressBar.style.width = scrolled + '%';
-        });
-    }
-    
-    // Add dynamic text glow on committee details
-    const detailHeaders = document.querySelectorAll('.detail-header h2');
-    detailHeaders.forEach(header => {
-        header.addEventListener('mouseenter', () => {
-            header.style.textShadow = '0 0 20px rgba(255, 215, 0, 0.8)';
-        });
-        
-        header.addEventListener('mouseleave', () => {
-            header.style.textShadow = 'none';
-        });
     });
-    
-    // Console message
-    console.log('%c🇮🇳 Atal Yuva Sansad - Ajar Amar Atal 🇮🇳', 
-        'color: #FF6B35; font-size: 20px; font-weight: bold; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);');
-    console.log('%cJune 12-14 | A Youth Parliament Initiative', 
-        'color: #4CAF50; font-size: 14px;');
-});
 
-// Premium: reveal content after load (prevents FOUC, adds polish)
-window.addEventListener('load', () => {
-    document.body.classList.add('loaded');
-});
-
-// Fallback: if load already fired (e.g. cached), add loaded
-if (document.readyState === 'complete') {
-    document.body.classList.add('loaded');
-}
-
-// Add performance optimization for scroll
-let ticking = false;
-window.addEventListener('scroll', () => {
-    if (!ticking) {
-        window.requestAnimationFrame(() => {
-            // Scroll-based animations
-            ticking = false;
-        });
-        ticking = true;
-    }
 });
