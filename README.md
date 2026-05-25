@@ -20,7 +20,7 @@
 
 The event takes place over three days at **Kiddy's Corner Hr. Secondary School, Shivpuri Link Road, Gwalior** bringing together delegates from across institutions to engage with governance as a constitutional responsibility.
 
-Website is live on : <a href='https://dotrwt.github.io/AtalYuvaSansad/'>Live</a>
+Website is live on : <a href='https://dotrwt.github.io/AtalYuvaSansad/'>dotrwt.github.io/AtalYuvaSansad/</a>
 
 <img src='https://github.com/dotrwt/AtalYuvaSansad/blob/main/AYS_UI.png' alt='AYS_UI'>
 
